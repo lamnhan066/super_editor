@@ -121,7 +121,8 @@ class SuperAndroidTextField extends StatefulWidget {
   final bool showDebugPaint;
 
   /// Builder that creates the popover toolbar widget that appears when text is selected.
-  final Widget Function(BuildContext, AndroidEditingOverlayController) popoverToolbarBuilder;
+  final Widget Function(BuildContext, AndroidEditingOverlayController)
+      popoverToolbarBuilder;
 
   /// Padding placed around the text content of this text field, but within the
   /// scrollable viewport.
@@ -134,7 +135,8 @@ class SuperAndroidTextField extends StatefulWidget {
 class SuperAndroidTextFieldState extends State<SuperAndroidTextField>
     with TickerProviderStateMixin, WidgetsBindingObserver
     implements ProseTextBlock, ImeInputOwner {
-  static const Duration _autoScrollAnimationDuration = Duration(milliseconds: 100);
+  static const Duration _autoScrollAnimationDuration =
+      Duration(milliseconds: 100);
   static const Curve _autoScrollAnimationCurve = Curves.fastOutSlowIn;
 
   final _textFieldKey = GlobalKey();
@@ -160,11 +162,13 @@ class SuperAndroidTextFieldState extends State<SuperAndroidTextField>
   @override
   void initState() {
     super.initState();
-    _focusNode = (widget.focusNode ?? FocusNode())..addListener(_updateSelectionAndImeConnectionOnFocusChange);
+    _focusNode = (widget.focusNode ?? FocusNode())
+      ..addListener(_updateSelectionAndImeConnectionOnFocusChange);
 
-    _textEditingController = (widget.textController ?? ImeAttributedTextEditingController())
-      ..addListener(_onTextOrSelectionChange)
-      ..onPerformActionPressed ??= _onPerformActionPressed;
+    _textEditingController =
+        (widget.textController ?? ImeAttributedTextEditingController())
+          ..addListener(_onTextOrSelectionChange)
+          ..onPerformActionPressed ??= _onPerformActionPressed;
 
     _textScrollController = TextScrollController(
       textController: _textEditingController,
@@ -192,19 +196,23 @@ class SuperAndroidTextFieldState extends State<SuperAndroidTextField>
 
     if (widget.focusNode != oldWidget.focusNode) {
       _focusNode.removeListener(_updateSelectionAndImeConnectionOnFocusChange);
-      _focusNode = (widget.focusNode ?? FocusNode())..addListener(_updateSelectionAndImeConnectionOnFocusChange);
+      _focusNode = (widget.focusNode ?? FocusNode())
+        ..addListener(_updateSelectionAndImeConnectionOnFocusChange);
     }
 
-    if (widget.textInputAction != oldWidget.textInputAction && _textEditingController.isAttachedToIme) {
+    if (widget.textInputAction != oldWidget.textInputAction &&
+        _textEditingController.isAttachedToIme) {
       _textEditingController.updateTextInputConfiguration(
         textInputAction: widget.textInputAction,
-        textInputType: _isMultiline ? TextInputType.multiline : TextInputType.text,
+        textInputType:
+            _isMultiline ? TextInputType.multiline : TextInputType.text,
       );
     }
 
     if (widget.textController != oldWidget.textController) {
       _textEditingController.removeListener(_onTextOrSelectionChange);
-      if (_textEditingController.onPerformActionPressed == _onPerformActionPressed) {
+      if (_textEditingController.onPerformActionPressed ==
+          _onPerformActionPressed) {
         _textEditingController.onPerformActionPressed = null;
       }
       if (widget.textController != null) {
@@ -297,12 +305,14 @@ class SuperAndroidTextFieldState extends State<SuperAndroidTextField>
         _log.info('Attaching TextInputClient to TextInput');
         setState(() {
           if (!_textEditingController.selection.isValid) {
-            _textEditingController.selection = TextSelection.collapsed(offset: _textEditingController.text.text.length);
+            _textEditingController.selection = TextSelection.collapsed(
+                offset: _textEditingController.text.text.length);
           }
 
           _textEditingController.attachToIme(
             textInputAction: widget.textInputAction,
-            textInputType: _isMultiline ? TextInputType.multiline : TextInputType.text,
+            textInputType:
+                _isMultiline ? TextInputType.multiline : TextInputType.text,
           );
 
           _autoScrollToKeepTextFieldVisible();
@@ -313,7 +323,8 @@ class SuperAndroidTextFieldState extends State<SuperAndroidTextField>
       _log.info('Lost focus. Detaching TextInputClient from TextInput.');
       setState(() {
         _textEditingController.detachFromIme();
-        _textEditingController.selection = const TextSelection.collapsed(offset: -1);
+        _textEditingController.selection =
+            const TextSelection.collapsed(offset: -1);
         _removeEditingOverlayControls();
       });
     }
@@ -350,7 +361,7 @@ class SuperAndroidTextFieldState extends State<SuperAndroidTextField>
         );
       });
 
-      Overlay.of(context).insert(_controlsOverlayEntry!);
+      Overlay.of(context)?.insert(_controlsOverlayEntry!);
     }
   }
 
@@ -419,13 +430,15 @@ class SuperAndroidTextFieldState extends State<SuperAndroidTextField>
     }
 
     // Compute the text field offset that should be visible to the user
-    final textFieldFocalPoint = widget.maxLines == null && _textEditingController.selection.isValid
+    final textFieldFocalPoint = widget.maxLines == null &&
+            _textEditingController.selection.isValid
         ? _textContentKey.currentState!.textLayout.getOffsetAtPosition(
             TextPosition(offset: _textEditingController.selection.extentOffset),
           )
         : Offset.zero;
 
-    final lineHeight = _textContentKey.currentState!.textLayout.getLineHeightAtPosition(
+    final lineHeight =
+        _textContentKey.currentState!.textLayout.getLineHeightAtPosition(
       TextPosition(offset: _textEditingController.selection.extentOffset),
     );
     final fieldBox = context.findRenderObject() as RenderBox;
@@ -447,7 +460,7 @@ class SuperAndroidTextFieldState extends State<SuperAndroidTextField>
   }
 
   ScrollableState? _findAncestorScrollable(BuildContext context) {
-    final ancestorScrollable = Scrollable.maybeOf(context);
+    final ancestorScrollable = Scrollable.of(context);
     if (ancestorScrollable == null) {
       return null;
     }
@@ -497,10 +510,13 @@ class SuperAndroidTextFieldState extends State<SuperAndroidTextField>
               builder: (context) {
                 final isTextEmpty = _textEditingController.text.text.isEmpty;
                 final showHint = widget.hintBuilder != null &&
-                    ((isTextEmpty && widget.hintBehavior == HintBehavior.displayHintUntilTextEntered) ||
+                    ((isTextEmpty &&
+                            widget.hintBehavior ==
+                                HintBehavior.displayHintUntilTextEntered) ||
                         (isTextEmpty &&
                             !_focusNode.hasFocus &&
-                            widget.hintBehavior == HintBehavior.displayHintUntilFocus));
+                            widget.hintBehavior ==
+                                HintBehavior.displayHintUntilFocus));
 
                 return CompositedTransformTarget(
                   link: _textContentLayerLink,
@@ -544,7 +560,8 @@ class SuperAndroidTextFieldState extends State<SuperAndroidTextField>
   }
 }
 
-Widget _defaultAndroidToolbarBuilder(BuildContext context, AndroidEditingOverlayController controller) {
+Widget _defaultAndroidToolbarBuilder(
+    BuildContext context, AndroidEditingOverlayController controller) {
   return AndroidTextEditingFloatingToolbar(
     onCutPressed: () {
       final textController = controller.textController;
@@ -578,7 +595,8 @@ Widget _defaultAndroidToolbarBuilder(BuildContext context, AndroidEditingOverlay
       if (selection.isCollapsed) {
         textController.insertAtCaret(text: clipboardContent.text!);
       } else {
-        textController.replaceSelectionWithUnstyledText(replacementText: clipboardContent.text!);
+        textController.replaceSelectionWithUnstyledText(
+            replacementText: clipboardContent.text!);
       }
     },
     onSelectAllPressed: () {

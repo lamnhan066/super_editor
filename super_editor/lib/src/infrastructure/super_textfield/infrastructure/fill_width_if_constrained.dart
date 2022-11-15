@@ -20,12 +20,13 @@ class FillWidthIfConstrained extends SingleChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(BuildContext context, RenderFillWidthIfConstrained renderObject) {
+  void updateRenderObject(
+      BuildContext context, RenderFillWidthIfConstrained renderObject) {
     renderObject.minWidth = _getViewportWidth(context);
   }
 
   double? _getViewportWidth(BuildContext context) {
-    final scrollable = Scrollable.maybeOf(context);
+    final scrollable = Scrollable.of(context);
     if (scrollable == null) {
       return null;
     }

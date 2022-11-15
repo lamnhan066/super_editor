@@ -7,18 +7,32 @@ const flutterAttribution = NamedAttribution('flutter');
 
 class InteractiveTextFieldDemo extends StatefulWidget {
   @override
-  _InteractiveTextFieldDemoState createState() => _InteractiveTextFieldDemoState();
+  _InteractiveTextFieldDemoState createState() =>
+      _InteractiveTextFieldDemoState();
 }
 
 class _InteractiveTextFieldDemoState extends State<InteractiveTextFieldDemo> {
   final _textFieldController = AttributedTextEditingController(
     text: AttributedText(
-        text: 'Super Editor is an open source text editor for Flutter projects.',
+        text:
+            'Super Editor is an open source text editor for Flutter projects.',
         spans: AttributedSpans(attributions: [
-          const SpanMarker(attribution: brandAttribution, offset: 0, markerType: SpanMarkerType.start),
-          const SpanMarker(attribution: brandAttribution, offset: 11, markerType: SpanMarkerType.end),
-          const SpanMarker(attribution: flutterAttribution, offset: 47, markerType: SpanMarkerType.start),
-          const SpanMarker(attribution: flutterAttribution, offset: 53, markerType: SpanMarkerType.end),
+          const SpanMarker(
+              attribution: brandAttribution,
+              offset: 0,
+              markerType: SpanMarkerType.start),
+          const SpanMarker(
+              attribution: brandAttribution,
+              offset: 11,
+              markerType: SpanMarkerType.end),
+          const SpanMarker(
+              attribution: flutterAttribution,
+              offset: 47,
+              markerType: SpanMarkerType.start),
+          const SpanMarker(
+              attribution: flutterAttribution,
+              offset: 53,
+              markerType: SpanMarkerType.end),
         ])),
   );
 
@@ -39,17 +53,18 @@ class _InteractiveTextFieldDemoState extends State<InteractiveTextFieldDemo> {
     super.dispose();
   }
 
-  void _onRightClick(
-      BuildContext textFieldContext, AttributedTextEditingController textController, Offset localOffset) {
+  void _onRightClick(BuildContext textFieldContext,
+      AttributedTextEditingController textController, Offset localOffset) {
     // Only show menu if some text is selected
     if (textController.selection.isCollapsed) {
       return;
     }
 
     final overlay = Overlay.of(context);
-    final overlayBox = overlay.context.findRenderObject() as RenderBox?;
+    final overlayBox = overlay?.context.findRenderObject() as RenderBox?;
     final textFieldBox = textFieldContext.findRenderObject() as RenderBox;
-    _popupOffset = textFieldBox.localToGlobal(localOffset, ancestor: overlayBox);
+    _popupOffset =
+        textFieldBox.localToGlobal(localOffset, ancestor: overlayBox);
 
     if (_popupEntry == null) {
       _popupEntry = OverlayEntry(builder: (context) {
@@ -84,7 +99,8 @@ class _InteractiveTextFieldDemoState extends State<InteractiveTextFieldDemo> {
                         TextButton(
                           onPressed: () {
                             Clipboard.setData(ClipboardData(
-                              text: textController.selection.textInside(textController.text.text),
+                              text: textController.selection
+                                  .textInside(textController.text.text),
                             ));
                             _closePopup();
                           },
@@ -100,7 +116,7 @@ class _InteractiveTextFieldDemoState extends State<InteractiveTextFieldDemo> {
         );
       });
 
-      overlay.insert(_popupEntry!);
+      overlay?.insert(_popupEntry!);
     } else {
       _popupEntry!.markNeedsBuild();
     }
@@ -136,13 +152,16 @@ class _InteractiveTextFieldDemoState extends State<InteractiveTextFieldDemo> {
                 textController: _textFieldController,
                 focusNode: _focusNode,
                 textStyleBuilder: _textStyleBuilder,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decorationBuilder: (context, child) {
                   return Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4),
                       border: Border.all(
-                        color: _focusNode!.hasFocus ? Colors.blue : Colors.grey.shade300,
+                        color: _focusNode!.hasFocus
+                            ? Colors.blue
+                            : Colors.grey.shade300,
                         width: 1,
                       ),
                     ),

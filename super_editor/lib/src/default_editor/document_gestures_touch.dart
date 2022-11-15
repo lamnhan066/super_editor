@@ -46,7 +46,7 @@ class ScrollableDocument extends StatelessWidget {
   final Widget child;
 
   ScrollableState? _findAncestorScrollable(BuildContext context) {
-    final ancestorScrollable = Scrollable.maybeOf(context);
+    final ancestorScrollable = Scrollable.of(context);
     if (ancestorScrollable == null) {
       return null;
     }
@@ -76,7 +76,9 @@ class ScrollableDocument extends StatelessWidget {
                 PointerDeviceKind.mouse,
               }),
               child: SingleChildScrollView(
-                physics: disableDragScrolling ? const NeverScrollableScrollPhysics() : null,
+                physics: disableDragScrolling
+                    ? const NeverScrollableScrollPhysics()
+                    : null,
                 controller: scrollController,
                 child: _buildDocument(),
               ),

@@ -122,7 +122,8 @@ class SuperIOSTextField extends StatefulWidget {
   final TextInputAction textInputAction;
 
   /// Builder that creates the popover toolbar widget that appears when text is selected.
-  final Widget Function(BuildContext, IOSEditingOverlayController) popoverToolbarBuilder;
+  final Widget Function(BuildContext, IOSEditingOverlayController)
+      popoverToolbarBuilder;
 
   /// Whether to paint debug guides.
   final bool showDebugPaint;
@@ -138,7 +139,8 @@ class SuperIOSTextField extends StatefulWidget {
 class SuperIOSTextFieldState extends State<SuperIOSTextField>
     with TickerProviderStateMixin, WidgetsBindingObserver
     implements ProseTextBlock, ImeInputOwner {
-  static const Duration _autoScrollAnimationDuration = Duration(milliseconds: 100);
+  static const Duration _autoScrollAnimationDuration =
+      Duration(milliseconds: 100);
   static const Curve _autoScrollAnimationCurve = Curves.fastOutSlowIn;
 
   final _textFieldKey = GlobalKey();
@@ -165,12 +167,14 @@ class SuperIOSTextFieldState extends State<SuperIOSTextField>
   @override
   void initState() {
     super.initState();
-    _focusNode = (widget.focusNode ?? FocusNode())..addListener(_updateSelectionAndImeConnectionOnFocusChange);
+    _focusNode = (widget.focusNode ?? FocusNode())
+      ..addListener(_updateSelectionAndImeConnectionOnFocusChange);
 
-    _textEditingController = (widget.textController ?? ImeAttributedTextEditingController())
-      ..addListener(_onTextOrSelectionChange)
-      ..onIOSFloatingCursorChange = _onFloatingCursorChange
-      ..onPerformActionPressed ??= _onPerformActionPressed;
+    _textEditingController =
+        (widget.textController ?? ImeAttributedTextEditingController())
+          ..addListener(_onTextOrSelectionChange)
+          ..onIOSFloatingCursorChange = _onFloatingCursorChange
+          ..onPerformActionPressed ??= _onPerformActionPressed;
 
     _textScrollController = TextScrollController(
       textController: _textEditingController,
@@ -214,7 +218,8 @@ class SuperIOSTextFieldState extends State<SuperIOSTextField>
       _textEditingController
         ..removeListener(_onTextOrSelectionChange)
         ..onIOSFloatingCursorChange = null;
-      if (_textEditingController.onPerformActionPressed == _onPerformActionPressed) {
+      if (_textEditingController.onPerformActionPressed ==
+          _onPerformActionPressed) {
         _textEditingController.onPerformActionPressed = null;
       }
 
@@ -312,12 +317,14 @@ class SuperIOSTextFieldState extends State<SuperIOSTextField>
         _log.info('Attaching TextInputClient to TextInput');
         setState(() {
           if (!_textEditingController.selection.isValid) {
-            _textEditingController.selection = TextSelection.collapsed(offset: _textEditingController.text.text.length);
+            _textEditingController.selection = TextSelection.collapsed(
+                offset: _textEditingController.text.text.length);
           }
 
           _textEditingController.attachToIme(
             textInputAction: widget.textInputAction,
-            textInputType: _isMultiline ? TextInputType.multiline : TextInputType.text,
+            textInputType:
+                _isMultiline ? TextInputType.multiline : TextInputType.text,
           );
 
           _autoScrollToKeepTextFieldVisible();
@@ -328,7 +335,8 @@ class SuperIOSTextFieldState extends State<SuperIOSTextField>
       _log.info('Lost focus. Detaching TextInputClient from TextInput.');
       setState(() {
         _textEditingController.detachFromIme();
-        _textEditingController.selection = const TextSelection.collapsed(offset: -1);
+        _textEditingController.selection =
+            const TextSelection.collapsed(offset: -1);
         _removeEditingOverlayControls();
       });
     }
@@ -365,7 +373,7 @@ class SuperIOSTextFieldState extends State<SuperIOSTextField>
         );
       });
 
-      Overlay.of(context).insert(_controlsOverlayEntry!);
+      Overlay.of(context)?.insert(_controlsOverlayEntry!);
     }
   }
 
@@ -385,7 +393,8 @@ class SuperIOSTextFieldState extends State<SuperIOSTextField>
   }
 
   void _onFloatingCursorChange(RawFloatingCursorPoint point) {
-    _floatingCursorController.updateFloatingCursor(_textContentKey.currentState!.textLayout, point);
+    _floatingCursorController.updateFloatingCursor(
+        _textContentKey.currentState!.textLayout, point);
   }
 
   /// Handles actions from the IME
@@ -415,13 +424,15 @@ class SuperIOSTextFieldState extends State<SuperIOSTextField>
     }
 
     // Compute the text field offset that should be visible to the user
-    final textFieldFocalPoint = widget.maxLines == null && _textEditingController.selection.isValid
+    final textFieldFocalPoint = widget.maxLines == null &&
+            _textEditingController.selection.isValid
         ? _textContentKey.currentState!.textLayout.getOffsetAtPosition(
             TextPosition(offset: _textEditingController.selection.extentOffset),
           )
         : Offset.zero;
 
-    final lineHeight = _textContentKey.currentState!.textLayout.getLineHeightAtPosition(
+    final lineHeight =
+        _textContentKey.currentState!.textLayout.getLineHeightAtPosition(
       TextPosition(offset: _textEditingController.selection.extentOffset),
     );
     final fieldBox = context.findRenderObject() as RenderBox;
@@ -443,7 +454,7 @@ class SuperIOSTextFieldState extends State<SuperIOSTextField>
   }
 
   ScrollableState? _findAncestorScrollable(BuildContext context) {
-    final ancestorScrollable = Scrollable.maybeOf(context);
+    final ancestorScrollable = Scrollable.of(context);
     if (ancestorScrollable == null) {
       return null;
     }
@@ -492,10 +503,13 @@ class SuperIOSTextFieldState extends State<SuperIOSTextField>
               builder: (context) {
                 final isTextEmpty = _textEditingController.text.text.isEmpty;
                 final showHint = widget.hintBuilder != null &&
-                    ((isTextEmpty && widget.hintBehavior == HintBehavior.displayHintUntilTextEntered) ||
+                    ((isTextEmpty &&
+                            widget.hintBehavior ==
+                                HintBehavior.displayHintUntilTextEntered) ||
                         (isTextEmpty &&
                             !_focusNode.hasFocus &&
-                            widget.hintBehavior == HintBehavior.displayHintUntilFocus));
+                            widget.hintBehavior ==
+                                HintBehavior.displayHintUntilFocus));
 
                 return CompositedTransformTarget(
                   link: _textContentLayerLink,
@@ -538,7 +552,9 @@ class SuperIOSTextFieldState extends State<SuperIOSTextField>
             color: widget.selectionColor,
           ),
           caretStyle: CaretStyle(
-            color: _floatingCursorController.isShowingFloatingCursor ? Colors.grey : widget.caretColor,
+            color: _floatingCursorController.isShowingFloatingCursor
+                ? Colors.grey
+                : widget.caretColor,
           ),
           selection: _textEditingController.selection,
           hasCaret: _focusNode.hasFocus,
@@ -548,7 +564,8 @@ class SuperIOSTextFieldState extends State<SuperIOSTextField>
   }
 }
 
-Widget _defaultPopoverToolbarBuilder(BuildContext context, IOSEditingOverlayController controller) {
+Widget _defaultPopoverToolbarBuilder(
+    BuildContext context, IOSEditingOverlayController controller) {
   return IOSTextEditingFloatingToolbar(
     onCutPressed: () {
       final textController = controller.textController;
@@ -581,7 +598,8 @@ Widget _defaultPopoverToolbarBuilder(BuildContext context, IOSEditingOverlayCont
       if (selection.isCollapsed) {
         textController.insertAtCaret(text: clipboardContent.text!);
       } else {
-        textController.replaceSelectionWithUnstyledText(replacementText: clipboardContent.text!);
+        textController.replaceSelectionWithUnstyledText(
+            replacementText: clipboardContent.text!);
       }
     },
   );

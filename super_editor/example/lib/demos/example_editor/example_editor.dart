@@ -48,7 +48,8 @@ class _ExampleEditorState extends State<ExampleEditor> {
     _docOps = CommonEditorOperations(
       editor: _docEditor,
       composer: _composer,
-      documentLayoutResolver: () => _docLayoutKey.currentState as DocumentLayout,
+      documentLayoutResolver: () =>
+          _docLayoutKey.currentState as DocumentLayout,
     );
     _editorFocusNode = FocusNode();
     _scrollController = ScrollController()..addListener(_hideOrShowToolbar);
@@ -142,7 +143,7 @@ class _ExampleEditorState extends State<ExampleEditor> {
 
       // Display the toolbar in the application overlay.
       final overlay = Overlay.of(context);
-      overlay.insert(_textFormatBarOverlayEntry!);
+      overlay?.insert(_textFormatBarOverlayEntry!);
     }
 
     // Schedule a callback after this frame to locate the selection
@@ -154,8 +155,10 @@ class _ExampleEditorState extends State<ExampleEditor> {
       }
 
       final docBoundingBox = (_docLayoutKey.currentState as DocumentLayout)
-          .getRectForSelection(_composer.selection!.base, _composer.selection!.extent)!;
-      final docBox = _docLayoutKey.currentContext!.findRenderObject() as RenderBox;
+          .getRectForSelection(
+              _composer.selection!.base, _composer.selection!.extent)!;
+      final docBox =
+          _docLayoutKey.currentContext!.findRenderObject() as RenderBox;
       final overlayBoundingBox = Rect.fromPoints(
         docBox.localToGlobal(docBoundingBox.topLeft),
         docBox.localToGlobal(docBoundingBox.bottomRight),
@@ -231,7 +234,8 @@ class _ExampleEditorState extends State<ExampleEditor> {
           composer: _composer,
           setWidth: (nodeId, width) {
             final node = _doc.getNodeById(nodeId)!;
-            final currentStyles = SingleColumnLayoutComponentStyles.fromMetadata(node);
+            final currentStyles =
+                SingleColumnLayoutComponentStyles.fromMetadata(node);
             SingleColumnLayoutComponentStyles(
               width: width,
               padding: currentStyles.padding,
@@ -243,7 +247,7 @@ class _ExampleEditorState extends State<ExampleEditor> {
 
       // Display the toolbar in the application overlay.
       final overlay = Overlay.of(context);
-      overlay.insert(_imageFormatBarOverlayEntry!);
+      overlay?.insert(_imageFormatBarOverlayEntry!);
     }
 
     // Schedule a callback after this frame to locate the selection
@@ -255,8 +259,10 @@ class _ExampleEditorState extends State<ExampleEditor> {
       }
 
       final docBoundingBox = (_docLayoutKey.currentState as DocumentLayout)
-          .getRectForSelection(_composer.selection!.base, _composer.selection!.extent)!;
-      final docBox = _docLayoutKey.currentContext!.findRenderObject() as RenderBox;
+          .getRectForSelection(
+              _composer.selection!.base, _composer.selection!.extent)!;
+      final docBox =
+          _docLayoutKey.currentContext!.findRenderObject() as RenderBox;
       final overlayBoundingBox = Rect.fromPoints(
         docBox.localToGlobal(docBoundingBox.topLeft),
         docBox.localToGlobal(docBoundingBox.bottomRight),
@@ -339,7 +345,8 @@ class _ExampleEditorState extends State<ExampleEditor> {
         documentLayoutKey: _docLayoutKey,
         documentOverlayBuilders: [
           DefaultCaretOverlayBuilder(
-            CaretStyle().copyWith(color: _isLight ? Colors.black : Colors.redAccent),
+            CaretStyle()
+                .copyWith(color: _isLight ? Colors.black : Colors.redAccent),
           ),
         ],
         selectionStyle: _isLight
@@ -359,7 +366,9 @@ class _ExampleEditorState extends State<ExampleEditor> {
         ],
         gestureMode: _gestureMode,
         inputSource: _inputSource,
-        keyboardActions: _inputSource == DocumentInputSource.ime ? defaultImeKeyboardActions : defaultKeyboardActions,
+        keyboardActions: _inputSource == DocumentInputSource.ime
+            ? defaultImeKeyboardActions
+            : defaultKeyboardActions,
         androidToolbarBuilder: (_) => AndroidTextEditingFloatingToolbar(
           onCutPressed: _cut,
           onCopyPressed: _copy,
