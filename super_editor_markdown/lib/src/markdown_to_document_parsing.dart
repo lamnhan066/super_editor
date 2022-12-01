@@ -50,7 +50,8 @@ MutableDocument deserializeMarkdownToDocument(
     // For the user to be able to interact with the editor, at least one
     // node is required, so we add an empty paragraph.
     documentNodes.add(
-      ParagraphNode(id: DocumentEditor.createNodeId(), text: AttributedText(text: '')),
+      ParagraphNode(
+          id: DocumentEditor.createNodeId(), text: AttributedText(text: '')),
     );
   }
 
@@ -139,7 +140,8 @@ class _MarkdownToDocument implements md.NodeVisitor {
         break;
       case 'li':
         if (_listItemTypeStack.isEmpty) {
-          throw Exception('Tried to parse a markdown list item but the list item type was null');
+          throw Exception(
+              'Tried to parse a markdown list item but the list item type was null');
         }
 
         _addListItem(
@@ -208,7 +210,8 @@ class _MarkdownToDocument implements md.NodeVisitor {
     );
   }
 
-  void _addParagraph(AttributedText attributedText, Map<String, String> attributes) {
+  void _addParagraph(
+      AttributedText attributedText, Map<String, String> attributes) {
     final textAlign = attributes['textAlign'];
 
     _content.add(
@@ -362,7 +365,8 @@ class _InlineMarkdownToDocument implements md.NodeVisitor {
   @override
   void visitText(md.Text text) {
     final attributedText = _textStack.removeLast();
-    _textStack.add(attributedText.copyAndAppend(AttributedText(text: text.text)));
+    _textStack
+        .add(attributedText.copyAndAppend(AttributedText(text: text.text)));
   }
 
   @override
@@ -437,21 +441,25 @@ abstract class ElementToNodeConverter {
 ///
 /// This [TagSyntax] produces `Element`s with a `u` tag.
 class UnderlineSyntax extends md.TagSyntax {
-  UnderlineSyntax() : super('¬', requiresDelimiterRun: true, allowIntraWord: true);
+  UnderlineSyntax()
+      : super('¬', requiresDelimiterRun: true, allowIntraWord: true);
 
   @override
-  md.Node close(md.InlineParser parser, md.Delimiter opener, md.Delimiter closer,
+  md.Node close(
+      md.InlineParser parser, md.Delimiter opener, md.Delimiter closer,
       {required List<md.Node> Function() getChildren}) {
     return md.Element('u', getChildren());
   }
 }
 
 /// Parses a paragraph preceded by an alignment token.
-class _ParagraphWithAlignmentSyntax extends _EmptyLinePreservingParagraphSyntax {
+class _ParagraphWithAlignmentSyntax
+    extends _EmptyLinePreservingParagraphSyntax {
   /// This pattern matches the text aligment notation.
   ///
-  /// Possible values are `:---`, `:---:` and `---:`
-  static final _alignmentNotationPattern = RegExp(r'^:-{3}|:-{3}:|-{3}:$');
+  /// Possible values are `:---`, `:---:`, `---:` and `--:--`
+  static final _alignmentNotationPattern =
+      RegExp(r'^:-{3}|:-{3}:|-{3}:|--:--$');
 
   const _ParagraphWithAlignmentSyntax();
 
@@ -473,7 +481,8 @@ class _ParagraphWithAlignmentSyntax extends _EmptyLinePreservingParagraphSyntax 
     /// We found a paragraph alignment token, but the block after the alignment token isn't a paragraph.
     /// Therefore, the paragraph alignment token is actually regular content. This parser doesn't need to
     /// take any action.
-    if (_standardNonParagraphBlockSyntaxes.any((syntax) => syntax.pattern.hasMatch(nextLine))) {
+    if (_standardNonParagraphBlockSyntaxes
+        .any((syntax) => syntax.pattern.hasMatch(nextLine))) {
       return false;
     }
 
@@ -494,7 +503,10 @@ class _ParagraphWithAlignmentSyntax extends _EmptyLinePreservingParagraphSyntax 
     final paragraph = super.parse(parser);
 
     if (paragraph is md.Element) {
-      paragraph.attributes.addAll({'textAlign': _convertMarkdownAlignmentTokenToSuperEditorAlignment(match!.input)});
+      paragraph.attributes.addAll({
+        'textAlign':
+            _convertMarkdownAlignmentTokenToSuperEditorAlignment(match!.input)
+      });
     }
 
     return paragraph;
@@ -502,7 +514,8 @@ class _ParagraphWithAlignmentSyntax extends _EmptyLinePreservingParagraphSyntax 
 
   /// Converts a markdown alignment token to the textAlign metadata used to configure
   /// the [ParagraphNode] alignment.
-  String _convertMarkdownAlignmentTokenToSuperEditorAlignment(String alignmentToken) {
+  String _convertMarkdownAlignmentTokenToSuperEditorAlignment(
+      String alignmentToken) {
     switch (alignmentToken) {
       case ':---':
         return 'left';
@@ -510,6 +523,8 @@ class _ParagraphWithAlignmentSyntax extends _EmptyLinePreservingParagraphSyntax 
         return 'center';
       case '---:':
         return 'right';
+      case '--:--':
+        return 'justify';
       // As we already check that the input matches the notation,
       // we shouldn't reach this point.
       default:
@@ -531,7 +546,8 @@ class _EmptyLinePreservingParagraphSyntax extends md.BlockSyntax {
   bool canEndBlock(md.BlockParser parser) => false;
 
   @override
-  bool canParse(md.BlockParser parser) => !_standardNonParagraphBlockSyntaxes.any((e) => e.canParse(parser));
+  bool canParse(md.BlockParser parser) =>
+      !_standardNonParagraphBlockSyntaxes.any((e) => e.canParse(parser));
 
   @override
   md.Node? parse(md.BlockParser parser) {
@@ -594,7 +610,8 @@ class _EmptyLinePreservingParagraphSyntax extends md.BlockSyntax {
 
     // Remove trailing whitespace from each line of the parsed paragraph
     // and join them into a single string, separated by a line breaks.
-    final contents = md.UnparsedContent(childLines.map((e) => _removeTrailingSpaces(e)).join('\n'));
+    final contents = md.UnparsedContent(
+        childLines.map((e) => _removeTrailingSpaces(e)).join('\n'));
     return _LineBreakSeparatedElement('p', [contents]);
   }
 
@@ -602,7 +619,8 @@ class _EmptyLinePreservingParagraphSyntax extends md.BlockSyntax {
   /// block syntax can parse the current input.
   ///
   /// An empty line ends the paragraph, unless [ignoreEmptyBlocks] is `true`.
-  bool _isAtParagraphEnd(md.BlockParser parser, {required bool ignoreEmptyBlocks}) {
+  bool _isAtParagraphEnd(md.BlockParser parser,
+      {required bool ignoreEmptyBlocks}) {
     if (parser.isDone) {
       return true;
     }
@@ -638,11 +656,14 @@ class _EmptyLinePreservingParagraphSyntax extends md.BlockSyntax {
 ///
 /// The default [Element] implementation ignores all line breaks.
 class _LineBreakSeparatedElement extends md.Element {
-  _LineBreakSeparatedElement(String tag, List<md.Node>? children) : super(tag, children);
+  _LineBreakSeparatedElement(String tag, List<md.Node>? children)
+      : super(tag, children);
 
   @override
   String get textContent {
-    return (children ?? []).map((md.Node? child) => child!.textContent).join('\n');
+    return (children ?? [])
+        .map((md.Node? child) => child!.textContent)
+        .join('\n');
   }
 }
 
@@ -650,8 +671,9 @@ class _LineBreakSeparatedElement extends md.Element {
 class _HeaderWithAlignmentSyntax extends md.BlockSyntax {
   /// This pattern matches the text aligment notation.
   ///
-  /// Possible values are `:---`, `:---:` and `---:`
-  static final _alignmentNotationPattern = RegExp(r'^:-{3}|:-{3}:|-{3}:$');
+  /// Possible values are `:---`, `:---:`, `---:` and `--:--`
+  static final _alignmentNotationPattern =
+      RegExp(r'^:-{3}|:-{3}:|-{3}:|--:--$');
 
   /// Use internal HeaderSyntax
   final _headerSyntax = const md.HeaderSyntax();
@@ -696,7 +718,10 @@ class _HeaderWithAlignmentSyntax extends md.BlockSyntax {
 
     // Use markdown alignment converter from [_ParagraphWithAlignmentSyntax]
     if (headerNode is md.Element) {
-      headerNode.attributes.addAll({'textAlign': _convertMarkdownAlignmentTokenToSuperEditorAlignment(match!.input)});
+      headerNode.attributes.addAll({
+        'textAlign':
+            _convertMarkdownAlignmentTokenToSuperEditorAlignment(match!.input)
+      });
     }
 
     return headerNode;
@@ -704,7 +729,8 @@ class _HeaderWithAlignmentSyntax extends md.BlockSyntax {
 
   /// Converts a markdown alignment token to the textAlign metadata used to configure
   /// the [ParagraphNode] alignment.
-  String _convertMarkdownAlignmentTokenToSuperEditorAlignment(String alignmentToken) {
+  String _convertMarkdownAlignmentTokenToSuperEditorAlignment(
+      String alignmentToken) {
     switch (alignmentToken) {
       case ':---':
         return 'left';
@@ -712,6 +738,8 @@ class _HeaderWithAlignmentSyntax extends md.BlockSyntax {
         return 'center';
       case '---:':
         return 'right';
+      case '--:--':
+        return 'justify';
       // As we already check that the input matches the notation,
       // we shouldn't reach this point.
       default:
